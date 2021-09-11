@@ -34,7 +34,7 @@ function connect() {
 
 function createAdminTable() {
   const query =
-    "CREATE TABLE admin (password VARCHAR(20), email VARCHAR(50) UNIQUE, ID int NOT NULL PRIMARY KEY AUTO_INCREMENT);";
+    "CREATE TABLE admin (password VARCHAR(20) NOT NULL, email VARCHAR(50) UNIQUE, username VARCHAR(20) UNIQUE NOT NULL, ID int NOT NULL PRIMARY KEY AUTO_INCREMENT);";
 
   return new Promise((resolve, reject) => {
     connection.query(query, function (error, results, fields) {
@@ -45,8 +45,8 @@ function createAdminTable() {
   });
 }
 
-async function addNewAdmin(email, password) {
-  const query = `INSERT INTO admin (email, password) VALUES ('${email}', '${password}');`;
+async function addNewAdmin(email, username, password) {
+  const query = `INSERT INTO admin (email,username, password) VALUES ('${email}', '${username}', '${password}');`;
   const r = await Query(query);
 
   return r;
@@ -66,8 +66,8 @@ async function getAllAdmin() {
   return r;
 }
 
-async function findAdmin(password) {
-  const query = `SELECT * from admin WHERE password = '${password}';`;
+async function findAdmin(password, username) {
+  const query = `SELECT * from admin WHERE password = '${password}' AND username = '${username}';`;
   const r = await Query(query);
 
   return r;
