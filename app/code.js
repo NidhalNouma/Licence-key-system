@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express.Router();
 const db = require("../db");
+const moment = require("moment");
 
 app.post("/all", async function (req, res) {
   const r = await db.getAllCode();
@@ -10,7 +11,19 @@ app.post("/all", async function (req, res) {
 app.post("/find", async function (req, res) {
   const { code } = req.body;
   const r = await db.findCode(code);
-  res.json(r);
+
+  const re={found: false, end: null}
+
+  if(r.results.length > 0) {
+    let t=r.results[0].end
+    t=moment(t).format('YYYY-MM-DD HH:mm')
+    const ft = t.toString().replace(/-/g, " ")
+
+    re.end=ft;
+    re.found = true;
+  }
+
+  res.json(re);
 });
 
 app.post("/add", async function (req, res) {
