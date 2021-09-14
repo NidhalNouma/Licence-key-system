@@ -29,3 +29,23 @@ export function DeleteButton({ onClick }) {
           </button>
      )
 }
+
+export function TextButton({text, onClick }) {
+     return (
+          <button onClick={onClick}
+               className="inline-flex justify-center py-1 px-2 border border-transparent text-sm font-medium rounded-md text-indigo-400 hover:text-indigo-600 focus:outline-none"
+          >
+                   {text}
+          </button>
+     )
+}
+
+export function RTextButton({text, onClick }) {
+     return (
+          <button onClick={onClick}
+               className="inline-flex justify-center py-1 px-2 border border-transparent text-sm font-medium rounded-md text-red-300 hover:text-red-500 focus:outline-none"
+          >
+                   {text}
+          </button>
+     )
+}

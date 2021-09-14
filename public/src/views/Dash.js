@@ -1,9 +1,10 @@
 import React from 'react'
 import NewKey from "../component/NewKey"
 import Keycolum from "../component/Keycolum"
+import User from "../component/user"
 import { Keys } from "../hooks/Keys"
 
-function Dash({ user }) {
+function Dash({ user, setUser }) {
      const keys = Keys()
 
      return (
@@ -15,6 +16,9 @@ function Dash({ user }) {
                     {
                          keys.keys.map((i, ii) => <Keycolum data={i} key={ii} setKeys={keys.setKeys} />).reverse()
                     }
+               </div>
+               <div className="m-4 rounded-md bg-white p-6 shadow-md">
+                    <User user={user} setUser={setUser} />
                </div>
           </div>
      )

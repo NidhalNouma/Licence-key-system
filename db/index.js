@@ -73,6 +73,13 @@ async function findAdmin(password, username) {
   return r;
 }
 
+async function findAdminById(ID) {
+  const query = `SELECT * from admin WHERE ID = '${ID}';`;
+  const r = await Query(query);
+
+  return r;
+}
+
 function createActivTable() {
   const query =
     "CREATE TABLE activations (code VARCHAR(30) NOT NULL UNIQUE, end DATE NOT NULL, ID int NOT NULL PRIMARY KEY AUTO_INCREMENT);";
@@ -130,6 +137,7 @@ module.exports = {
   getAllAdmin,
   findAdmin,
   updateAdminPassword,
+  findAdminById,
 
   getAllCode,
   findCode,

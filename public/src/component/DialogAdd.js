@@ -2,11 +2,12 @@ import { Fragment, useRef } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import Datepicker from "./Datepicker"
 import Button from './Button'
+import moment from "moment"
 import { v4 as uuidv4 } from 'uuid';
 
-export default function Example({ open, setOpen, uid, setKeys }) {
+export default function Example({ open, setOpen, uid, setKeys, edit,end }) {
      const cancelButtonRef = useRef(null)
-
+     
      return (
           <Transition.Root show={open} as={Fragment}>
                <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" initialFocus={cancelButtonRef} onClose={setOpen}>
@@ -41,17 +42,17 @@ export default function Example({ open, setOpen, uid, setKeys }) {
                                         <div className="sm:flex sm:items-start">
                                              <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                                                   <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
-                                                       New Key
+                                                       {edit? "Key": "New Key"}
                                                   </Dialog.Title>
                                                   <div className="mt-2">
                                                        <div>
-                                                            <Button text="Auto Generate" onClick={() => uid.setKey(uuidv4())} />
+                                                            {!edit && <Button text="Auto Generate" onClick={() => uid.setKey(uuidv4())} /> }
                                                             <span className="font-bold">{uid.key}</span>
                                                        </div>
                                                        <br />
                                                        <div>
                                                             <h3 className="mb-2 text-lg leading-6 font-medium text-gray-900">
-                                                                 Expire on
+                                                                 Expire on <span className="font-bold text-indigo-500">{edit && moment(end).format('YYYY-MM-DD')}</span>
                                                             </h3>
                                                             <Datepicker startDate={uid.date} setStartDate={uid.setDate} />
                                                        </div>
@@ -67,7 +68,7 @@ export default function Example({ open, setOpen, uid, setKeys }) {
                                         >
                                              Add
                                         </button> */}
-                                        <Button text="Add" onClick={async () => {
+                                        <Button text={edit? "Edit":"Add"} onClick={async () => {
                                              await uid.submit().then((r) => {
                                                   if (r) {
                                                        setOpen(false);

@@ -41,7 +41,13 @@ app.post("/add", async function (req, res) {
 app.post("/update", async function (req, res) {
   const { id, end } = req.body;
   const r = await db.updateCode(id, end);
-  res.send(JSON.stringify(r));
+
+  if (!r.error) {
+    const r1 = await db.getAllCode();
+    r.results = r1.results;
+  }
+
+  res.json(r);
 });
 
 

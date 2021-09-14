@@ -7,7 +7,7 @@ function App() {
   return (
     <>
       {user ?
-        <Dash user={user} /> :
+        <Dash user={user} setUser={setUser} /> :
         <Login setUser={setUser} />}
     </>
   );
