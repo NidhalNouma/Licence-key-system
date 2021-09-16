@@ -5,11 +5,12 @@ export function Add() {
      const d= new Date()
      const [date, setDate] = useState(addDays(d,7))
      const [key, setKey] = useState("")
+     const [maxAccounts, setMaxAccounts] = useState(3)
 
      async function submit() {
           if (!key) return false
 
-          const data = { code: key, end: date }
+          const data = { code: key, end: date, maxAccounts: maxAccounts}
           const r = await axios.post("/code/add", data)
 
           console.log(r)
@@ -21,7 +22,7 @@ export function Add() {
           return r.data.results
      }
 
-     return { date, setDate, key, setKey, submit }
+     return { date, setDate, key, setKey, maxAccounts, setMaxAccounts, submit }
 }
 
 export function Edit(id,end, ikey) {
@@ -30,11 +31,12 @@ export function Edit(id,end, ikey) {
      const [date, setDate] = useState(addDays(d,7))
      const [key, setKey] = useState(ikey)
      const [ID] = useState(id)
+     const [maxAccounts, setMaxAccounts] = useState(3)
 
      async function submit() {
           if (!key) return false
 
-          const data = { id:ID, code: key, end: date }
+          const data = { id:ID, code: key, end: date, maxAccounts: maxAccounts }
           const r = await axios.post("/code/update", data)
 
           console.log(r)
@@ -46,7 +48,7 @@ export function Edit(id,end, ikey) {
           return r.data.results
      }
 
-     return { date, setDate, key, setKey, submit }
+     return { date, setDate, key, setKey, maxAccounts, setMaxAccounts, submit }
 }
 
 export function Keys() {
@@ -56,6 +58,7 @@ export function Keys() {
           const r = await axios.post("/code/all")
 
           if (!r.data.error) setKeys(r.data.results)
+          // console.log(r.data.results)
      }
 
      useEffect(() => {
@@ -68,6 +71,13 @@ export function Keys() {
 export async function Delete(id) {
      if (!id) return false
      const r = await axios.post("/code/delete", { id: id })
+     console.log(r)
+     return r.data.results
+}
+
+export async function DeleteAccount(id) {
+     if (!id) return false
+     const r = await axios.post("/code/deleteAccount", { id: id })
      console.log(r)
      return r.data.results
 }

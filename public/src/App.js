@@ -6,7 +6,7 @@ function App() {
   const [user, setUser] = useState(null)
   return (
     <>
-      {user ?
+      {!!user ?
         <Dash user={user} setUser={setUser} /> :
         <Login setUser={setUser} />}
     </>

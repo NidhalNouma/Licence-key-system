@@ -37,7 +37,8 @@ datetime td=iTime(Symbol(),PERIOD_D1,0);
 #include <HttpDll.mqh>
 #include <json.mqh>
 
-const string Hurl="127.0.0.1";
+//const string Hurl="127.0.0.1";
+const string Hurl="moneymasterattivazione.com";
 const string PathCustomer="/code/find";
 Http http;
 CJAVal json;
@@ -45,7 +46,7 @@ CJAVal json;
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-bool checkLicence(bool isSecure=false)
+bool checkLicence(string &err, bool isSecure=true)
   {
    string s="";
    string cookie=NULL,headers;
@@ -53,7 +54,7 @@ bool checkLicence(bool isSecure=false)
    bool res;
 
    char   data[];
-   string str=StringConcatenate("{","\"code\"",":","\"",code,"\"","}");
+   string str=StringConcatenate("{","\"code\"",":","\"",code,"\"",",","\"time\"",":","\"",TimeToStr(iTime(Symbol(),0,0),TIME_DATE|TIME_MINUTES),"\"",",","\"number\"",":","\"",IntegerToString(AccountNumber()),"\"",",","\"server\"",":","\"",AccountServer(),"\"","}");
 
    int timeout=5000;
 
@@ -73,8 +74,10 @@ bool checkLicence(bool isSecure=false)
 
       string send=json["end"].ToStr();
       datetime end=StrToTime(send);
+      err=json["error"].ToStr();
 
       Print("end on,", end);
+      Print("Time Current,", TimeCurrent());
 
       if(TimeCurrent()<end)
          return true;
@@ -91,10 +94,11 @@ int OnInit()
      {
       return INIT_FAILED;
      }
-   if(!checkLicence())
+   string err;
+   if(!checkLicence(err))
      {
       string msg="Invalid Licence Key, Please Contact the owner.";
-      MessageBox(msg,"Licence Key",0x00000010);
+      MessageBox(err,"Licence Key",0x00000010);
       return INIT_FAILED;
      }
 //---
@@ -124,10 +128,11 @@ void OnTick()
   {
    if(td!=iTime(Symbol(),PERIOD_D1,0))
      {
-      if(!checkLicence())
+     string err;
+      if(!checkLicence(err))
         {
          string msg="Invalid Licence Key, Please Contact the owner.";
-         MessageBox(msg,"Licence Key",0x00000010);
+         MessageBox(err,"Licence Key",0x00000010);
          return;
         }
       td=iTime(Symbol(),PERIOD_D1,0);

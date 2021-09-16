@@ -2,6 +2,7 @@ import { Fragment, useRef } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import Datepicker from "./Datepicker"
 import Button from './Button'
+import Input from './Input'
 import moment from "moment"
 import { v4 as uuidv4 } from 'uuid';
 
@@ -39,8 +40,8 @@ export default function Example({ open, setOpen, uid, setKeys, edit,end }) {
                          >
                               <div className="inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                                    <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 rounded-lg">
-                                        <div className="sm:flex sm:items-start">
-                                             <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                        <div className="flex items-start">
+                                             <div className="mt-3 sm:mt-0 sm:ml-4 text-left">
                                                   <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
                                                        {edit? "Key": "New Key"}
                                                   </Dialog.Title>
@@ -55,6 +56,13 @@ export default function Example({ open, setOpen, uid, setKeys, edit,end }) {
                                                                  Expire on <span className="font-bold text-indigo-500">{edit && moment(end).format('YYYY-MM-DD')}</span>
                                                             </h3>
                                                             <Datepicker startDate={uid.date} setStartDate={uid.setDate} />
+                                                       </div>
+                                                       <br />
+                                                       <div className="w-32">
+                                                            <h3 className="mb-2 text-lg leading-6 font-medium text-gray-900">
+                                                                 Max Accounts
+                                                            </h3>
+                                                            <Input label="Max Accounts" value={uid.maxAccounts} setValue={uid.setMaxAccounts} type="number"/>
                                                        </div>
                                                   </div>
                                              </div>

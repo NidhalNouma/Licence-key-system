@@ -2,7 +2,7 @@ import React from 'react'
 
 function Input({ label, type, value, setValue }) {
      return (
-          <div className="mb-6 sm:w-80">
+          <div className="mb-6 w-full">
                {/* <label className="block text-sm font-medium text-pcolor">
                     {label}
                </label> */}

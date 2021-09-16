@@ -17,6 +17,7 @@ connection.connect(async (err) => {
   }
   await createAdminTable();
   await createActivTable();
+  await createAccountsTable();
 });
 
 function connect() {
@@ -82,7 +83,7 @@ async function findAdminById(ID) {
 
 function createActivTable() {
   const query =
-    "CREATE TABLE activations (code VARCHAR(30) NOT NULL UNIQUE, end DATE NOT NULL, ID int NOT NULL PRIMARY KEY AUTO_INCREMENT);";
+    "CREATE TABLE activations (code VARCHAR(30) NOT NULL UNIQUE, maxAccounts INT DEFAULT 3, end DATE NOT NULL, ID int NOT NULL PRIMARY KEY AUTO_INCREMENT);";
 
   return new Promise((resolve, reject) => {
     connection.query(query, function (error, results, fields) {
@@ -94,28 +95,40 @@ function createActivTable() {
 }
 
 async function getAllCode() {
-  const query = `SELECT * from activations;`;
+  const query = `SELECT * from activations LEFT JOIN accounts ON activations.ID=accounts.code_ID;`;
   const r = await Query(query);
+
+  if(r.results.length > 0) {
+    let nr=filterAcc(r)
+
+    r.results = nr
+  }
 
   return r;
 }
 
 async function findCode(code) {
-  const query = `SELECT * from activations WHERE code = '${code}';`;
+  const query = `SELECT * from activations LEFT JOIN accounts ON activations.ID=accounts.code_ID WHERE code = '${code}';`;
+  const r = await Query(query);
+
+  if(r.results.length > 0) {
+    let nr=filterAcc(r)
+
+    r.results = nr
+  }
+
+  return r;
+}
+
+async function addCode(code, end, maxAccounts) {
+  const query = `INSERT INTO activations (code, end, maxAccounts) VALUES ('${code}', '${end}', '${maxAccounts}');`;
   const r = await Query(query);
 
   return r;
 }
 
-async function addCode(code, end) {
-  const query = `INSERT INTO activations (code, end) VALUES ('${code}', '${end}');`;
-  const r = await Query(query);
-
-  return r;
-}
-
-async function updateCode(id, end) {
-  const query = `UPDATE activations SET end='${end}' WHERE ID='${id}';`;
+async function updateCode(id, end, maxAccounts) {
+  const query = `UPDATE activations SET end='${end}', maxAccounts='${maxAccounts}' WHERE ID='${id}';`;
   const r = await Query(query);
 
   return r;
@@ -128,10 +141,45 @@ async function deleteCode(id) {
   return r;
 }
 
+function createAccountsTable() {
+  const query =
+    "CREATE TABLE accounts (server VARCHAR(50), number VARCHAR(50), code_ID INT NOT NULL, accID int NOT NULL PRIMARY KEY AUTO_INCREMENT);";
+
+  return new Promise((resolve, reject) => {
+    connection.query(query, function (error, results, fields) {
+      if (error) console.log("Accounts Table already exists ...");
+      else console.log("Accounts table created ...  ");
+      resolve({ error, results, fields });
+    });
+  });
+}
+
+async function addAccount(server, number, code_ID) {
+  const query = `INSERT INTO accounts (server, number, code_ID) VALUES ('${server}', '${number}', '${code_ID}');`;
+  const r = await Query(query);
+
+  return r;
+}
+
+async function deleteAccount(id) {
+  const query = `DELETE FROM accounts WHERE accID='${id}';`;
+  const r = await Query(query);
+
+  return r;
+}
+
+async function deleteAccountByCode(id) {
+  const query = `DELETE FROM accounts WHERE code_ID='${id}';`;
+  const r = await Query(query);
+
+  return r;
+}
+
 module.exports = {
   connect,
   createAdminTable,
   createActivTable,
+  createAccountsTable,
 
   addNewAdmin,
   getAllAdmin,
@@ -144,6 +192,10 @@ module.exports = {
   addCode,
   updateCode,
   deleteCode,
+
+  addAccount,
+  deleteAccount,
+  deleteAccountByCode,
 };
 
 const Query = (query) =>
@@ -152,3 +204,23 @@ const Query = (query) =>
       resolve({ error, results, fields });
     });
   });
+
+function filterAcc(r){
+  const nr=[]
+    r.results.map(i=>{
+      let index = null;
+      const arr = nr.find((i1, ii1)=> { index=ii1; return i1.ID===i.ID})
+      if(arr){
+        const nd = {code:i.code,maxAccounts:i.maxAccounts,end:i.end,ID:i.ID, accounts: [...arr.accounts, {server:i.server, number:i.number,ID:i.accID}]}
+        // console.log(index)
+        nr[index] = nd
+      } else{
+        let ad = []
+        if(i.accID)
+          ad.push({server:i.server, number:i.number,ID:i.accID})
+        nr.push({code:i.code,maxAccounts:i.maxAccounts,end:i.end,ID:i.ID, accounts: ad})
+      }
+    })
+
+    return nr
+}

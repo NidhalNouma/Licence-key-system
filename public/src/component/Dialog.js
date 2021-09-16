@@ -2,9 +2,8 @@ import { Fragment, useRef } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationIcon } from '@heroicons/react/outline'
 import ButtonD from './ButtonD'
-import { Delete } from "../hooks/Keys"
 
-export default function Example({ open, setOpen, setKeys, id }) {
+export default function Example({ open, setOpen, setKeys, id, Delete, text='Key' }) {
      const cancelButtonRef = useRef(null)
 
      return (
@@ -44,11 +43,11 @@ export default function Example({ open, setOpen, setKeys, id }) {
                                              </div>
                                              <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                                                   <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
-                                                       Delete Key
+                                                       Delete {text}
                                                   </Dialog.Title>
                                                   <div className="mt-2">
                                                        <p className="text-sm text-gray-500">
-                                                            Are you sure you want to delete this Key? All of your data will be permanently removed.
+                                                            Are you sure you want to delete this {text}? All of your data will be permanently removed.
                                                             This action cannot be undone.
                                                        </p>
                                                   </div>
