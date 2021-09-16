@@ -25,13 +25,13 @@ export function Add() {
      return { date, setDate, key, setKey, maxAccounts, setMaxAccounts, submit }
 }
 
-export function Edit(id,end, ikey) {
+export function Edit(id,end, ikey, max) {
      const d= new Date()
 
      const [date, setDate] = useState(addDays(d,7))
      const [key, setKey] = useState(ikey)
      const [ID] = useState(id)
-     const [maxAccounts, setMaxAccounts] = useState(3)
+     const [maxAccounts, setMaxAccounts] = useState(max)
 
      async function submit() {
           if (!key) return false

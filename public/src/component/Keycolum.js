@@ -9,7 +9,7 @@ import { Delete, DeleteAccount } from "../hooks/Keys"
 function Keycolum({ data, setKeys }) {
      const [open, setOpen] = useState(false)
      const [opene, setOpene] = useState(false)
-     const edit = Edit(data.ID, data.end, data.code)
+     const edit = Edit(data.ID, data.end, data.code, data.maxAccounts)
      const [showa, setShowa] = useState(false)
 
      return (
